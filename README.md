@@ -40,3 +40,9 @@ Invoke-WebRequest "http://localhost/guillermoswebsystemss/TestingBackend/test.ph
 ```
 
 This returns JSON showing each password rule check and whether the password is strong.
+
+## SQL Import Guide
+
+For complete SQL import and local folder placement instructions (XAMPP and Laragon), see:
+
+- `README_SQL_IMPORT.md`
