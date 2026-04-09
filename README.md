@@ -96,5 +96,4 @@ Create a database named:
 
 Open in browser:
 
-- XAMPP: `http://localhost/GuillermosWebSystemss/Views/landing/index.php`
-- Laragon: `http://localhost/GuillermosWebSystemss/Views/landing/index.php`
+- For both XAMPP and Laragon: `http://localhost/guillermoswebsystemss/Views/landing/index.php`
