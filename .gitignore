@@ -10,3 +10,6 @@ vendor/
 # OAuth secrets
 client_secret_*.json
 google_token.json
+
+# Database dumps (private data)
+*.sql
