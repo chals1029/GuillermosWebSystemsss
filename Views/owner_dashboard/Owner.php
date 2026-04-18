@@ -8,6 +8,22 @@ if (!isset($_SESSION['user_role']) || strtolower($_SESSION['user_role']) !== 'ow
 }
 require_once __DIR__ . '/../../Controllers/OwnerController.php';
 require_once __DIR__ . '/../../Controllers/EmailApiController.php';
+require_once __DIR__ . '/../../Controllers/Security/DdosGuard.php';
+
+$ownerActionRequest = isset($_GET['action']) || isset($_POST['action']);
+if ($ownerActionRequest && !DdosGuard::protect([
+    'scope' => 'owner_dashboard',
+    'max_requests' => (int)(getenv('OWNER_DDOS_MAX_REQUESTS') ?: 120),
+    'window_seconds' => (int)(getenv('OWNER_DDOS_WINDOW_SECONDS') ?: 60),
+    'block_seconds' => (int)(getenv('OWNER_DDOS_BLOCK_SECONDS') ?: 180),
+    'request_methods' => ['GET', 'POST'],
+    'response_type' => 'json',
+    'message' => 'Too many admin requests detected. Please wait and try again.',
+    'exit_on_block' => false,
+])) {
+    exit;
+}
+
 $ownerController = new OwnerController();
 // ADD NEW STAFF
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_staff') {

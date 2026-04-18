@@ -5,7 +5,6 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/../Config.php'; // Ensures .env is always loaded
 
 class EmailApiController
 {
@@ -20,23 +19,12 @@ class EmailApiController
 
     private static function env(string $key, ?string $default = null): ?string
     {
-        // 1. Check $_ENV first (set by Config.php via putenv + $_ENV assignment)
-        if (isset($_ENV[$key]) && $_ENV[$key] !== '') {
-            return (string)$_ENV[$key];
-        }
-
-        // 2. Fall back to getenv() (works in non-thread-safe PHP)
         $value = getenv($key);
-        if ($value !== false && $value !== '') {
-            return (string)$value;
+        if ($value === false || $value === '') {
+            return $default;
         }
 
-        // 3. Check $_SERVER as last resort
-        if (isset($_SERVER[$key]) && $_SERVER[$key] !== '') {
-            return (string)$_SERVER[$key];
-        }
-
-        return $default;
+        return (string)$value;
     }
 
     /** @return array{host:string,port:int,username:string,password:string,encryption:string,from_email:string,from_name:string,debug:int} */

@@ -4,7 +4,13 @@
         "phpmailer/phpmailer": "6.8"
     },
     "scripts": {
-        "pre-autoload-dump": "Google\\Task\\Composer::cleanup"
+        "pre-autoload-dump": "Google\\Task\\Composer::cleanup",
+        "test:unit": "php tests/unit/DdosRateLimiterTest.php",
+        "test:system": "php tests/system/DdosGuardSystemTest.php",
+        "test": [
+            "@test:unit",
+            "@test:system"
+        ]
     },
     "extra": {
         "google/apiclient-services": [

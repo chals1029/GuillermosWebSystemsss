@@ -11,6 +11,21 @@ require_once __DIR__ . '/../Config.php';
 require_once __DIR__ . '/../Models/User.php';
 require_once __DIR__ . '/EmailApiController.php'; // Use the new Email API controller
 require_once __DIR__ . '/PasswordPolicy.php';
+require_once __DIR__ . '/Security/DdosGuard.php';
+
+if (!DdosGuard::protect([
+    'scope' => 'auth',
+    'max_requests' => (int)(getenv('AUTH_DDOS_MAX_REQUESTS') ?: 20),
+    'window_seconds' => (int)(getenv('AUTH_DDOS_WINDOW_SECONDS') ?: 60),
+    'block_seconds' => (int)(getenv('AUTH_DDOS_BLOCK_SECONDS') ?: 600),
+    'request_methods' => ['POST'],
+    'response_type' => 'auto',
+    'redirect_url' => '/Views/landing/index.php',
+    'message' => 'Too many authentication requests. Please try again in a few minutes.',
+    'exit_on_block' => false,
+])) {
+    exit;
+}
 
 $userModel = new User($conn);
 

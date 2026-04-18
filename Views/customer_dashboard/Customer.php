@@ -9,6 +9,21 @@ if (!isset($_SESSION['user_role']) || strtolower($_SESSION['user_role']) !== 'cu
 }
 
 require_once __DIR__ . '/../../Controllers/CustomerController.php';
+require_once __DIR__ . '/../../Controllers/Security/DdosGuard.php';
+
+$isRateLimitedRequest = (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') || isset($_GET['action']);
+if ($isRateLimitedRequest && !DdosGuard::protect([
+    'scope' => 'customer_dashboard',
+    'max_requests' => (int)(getenv('CUSTOMER_DDOS_MAX_REQUESTS') ?: 120),
+    'window_seconds' => (int)(getenv('CUSTOMER_DDOS_WINDOW_SECONDS') ?: 60),
+    'block_seconds' => (int)(getenv('CUSTOMER_DDOS_BLOCK_SECONDS') ?: 180),
+    'request_methods' => ['GET', 'POST'],
+    'response_type' => 'json',
+    'message' => 'Too many requests detected. Please wait before trying again.',
+    'exit_on_block' => false,
+])) {
+    exit;
+}
 
 $controller = new CustomerController();
 

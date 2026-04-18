@@ -9,8 +9,22 @@ if (!isset($_SESSION['user_role']) || strtolower($_SESSION['user_role']) !== 'st
 }
 
 require_once __DIR__ . '/../../Controllers/StaffController.php';
+require_once __DIR__ . '/../../Controllers/Security/DdosGuard.php';
 
 if (isset($_GET['action']) || isset($_POST['action'])) {
+    if (!DdosGuard::protect([
+        'scope' => 'staff_dashboard',
+        'max_requests' => (int)(getenv('STAFF_DDOS_MAX_REQUESTS') ?: 120),
+        'window_seconds' => (int)(getenv('STAFF_DDOS_WINDOW_SECONDS') ?: 60),
+        'block_seconds' => (int)(getenv('STAFF_DDOS_BLOCK_SECONDS') ?: 180),
+        'request_methods' => ['GET', 'POST'],
+        'response_type' => 'json',
+        'message' => 'Too many staff requests detected. Please wait and try again.',
+        'exit_on_block' => false,
+    ])) {
+        exit;
+    }
+
     ob_start();
     $controller = new StaffController();
     $controller->handleAjax();

@@ -41,6 +41,36 @@ Invoke-WebRequest "http://localhost/guillermoswebsystemss/TestingBackend/test.ph
 
 This returns JSON showing each password rule check and whether the password is strong.
 
+## DDoS Protection
+
+The app now includes request rate limiting for:
+
+- `Controllers/AuthController.php` (login/register/password reset actions)
+- `Views/customer_dashboard/Customer.php` action requests
+- `Views/staff_dashboard/staff.php` action requests
+- `Views/owner_dashboard/Owner.php` action requests
+
+You can tune limits in `.env`:
+
+- `DDOS_MAX_REQUESTS`, `DDOS_WINDOW_SECONDS`, `DDOS_BLOCK_SECONDS`
+- `AUTH_DDOS_*`, `CUSTOMER_DDOS_*`, `STAFF_DDOS_*`, `OWNER_DDOS_*`
+- `DDOS_RATE_LIMIT_STORAGE` (optional custom storage file path for limiter state)
+
+## Security Tests
+
+Run unit and system tests:
+
+```bash
+composer test
+```
+
+Or run them individually:
+
+```bash
+php tests/unit/DdosRateLimiterTest.php
+php tests/system/DdosGuardSystemTest.php
+```
+
 ## SQL Import Guide
 
 This guide explains where to place the project folder and how to import the database SQL file.

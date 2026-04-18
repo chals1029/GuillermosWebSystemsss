@@ -11,5 +11,5 @@ vendor/
 client_secret_*.json
 google_token.json
 
-# Database dumps (private data)
-*.sql
+# Runtime security state
+storage_rate_limits/
